@@ -1,0 +1,490 @@
+Red Wine Exploration
+========================================================
+
+
+This report explores a dataset containing quality and chemical properties of approximately 1,600 red wines.
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+redwine<-read.csv('wineQualityReds.csv')
+dim(redwine)
+str(redwine)
+summary(redwine)
+
+```
+Our dataset consists of thirteen variables, with almost 1600 observations.
+
+## Univariate Plots Section
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+qplot(x=quality,data=redwine,color=I('black'),fill=I('#0990D9'))+
+  ggtitle('Quality of red wines')
+```
+
+The quality in our dataset ranges from 3(less quality) to 8(high quality) with the peaks in 5 and 6.There are very few redwines with quality 3 and 8.Why there are peaks at 5 and 6?What factors affect the quality of redwines?Lets check out the other attributes of redwine dataset.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=fixed.acidity,data=redwine,color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Fixed.acidity of red wines')
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=volatile.acidity,data=redwine,color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Volatile.acidity of red wines')
+```
+
+Most red wines have fixed.acidity value around 6 and 7 and volatile.acidity value around 0.4 and 0.6 .In both cases,there is a gap in certain values where that values are not present in the dataset.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=citric.acid,data=subset(redwine,citric.acid >0),
+      color=I('black'),fill=I('#0990D9'))+
+  ggtitle('Citric.acid of red wines')
+  
+```
+
+Most red wines in the dataset have zero value for citric acid.We eliminate that part from the plot for the exploration.Now the highest number value is around 0.04
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+res<-sum(redwine$citric.acid==0)
+res
+```
+
+There are 132 datasets with 0 value for citric.acid.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=residual.sugar,data=redwine,binwidth=0.2,color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Residual.sugar of red wines')
+ 
+```
+
+There is a peak value around 2 for residual.sugar and there are gaps between certain values.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=chlorides,data=redwine,color=I('black'),
+      fill=I('#0990D9'))+scale_y_log10()+
+  ggtitle('Chlorides of red wines')
+```
+
+High value of chlorides around 0.1 and a gap between 0.4 and 0.6.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=free.sulfur.dioxide,data=redwine,binwidth=1,color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Free.sulfur.dioxide of red wines')
+   
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=total.sulfur.dioxide,binwidth=5,data=redwine,color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Total.sulfur.dioxide of red wines')
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+summary(redwine$free.sulfur.dioxide)
+summary(redwine$total.sulfur.dioxide)
+```
+
+The plot for free.sulfur.dioxide and total.sulfur.dioxide are positively skewed
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=density,data=redwine,color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Density of red wines')
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+summary(redwine$density)
+```
+
+The plot for the density is a normal distribution with values ranges from 0.9901 to 1.0037
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=pH,data=redwine,binwidth=0.01,color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('pH value of red wines')
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+summary(redwine$pH)
+```
+
+The plot for pH value is also a normal distribution with values from 2.740 to 4.010
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=sulphates,data=redwine,binwidth=0.01,color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Sulphates of red wines')
+```
+
+The sulphates are high in the range 0.5 to 0.7 and after that,it goes downwards.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=alcohol,data=redwine,binwidth=0.1,color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Alcohol content  of red wines')
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+summary(redwine$alcohol)
+table(redwine$alcohol)
+```
+
+The plot for the alcohol has a peak value around 9.The highest count is 139 for the value 9.5.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=quality,data=subset(redwine,pH<3),color=I('black'),
+      fill=I('#0990D9'))+
+        ggtitle('Quality of red wines with low pH value')
+
+```
+
+Here,most of the red wines have quality equal to 5,least number have quality 4.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+qplot(x=quality,data=subset(redwine,pH>3.5),color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Quality of redwines with high pH value')
+
+```
+
+Here,most of the red wines have quality equal to 5 and 6,least with quality 3.From the two graphs,with pH<3 and with pH>3.5,the plot for the quality remains almost same.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=quality,data=subset(redwine,alcohol==8.4),color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Quality of redwines with low alcohol content')
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=quality,data=subset(redwine,alcohol==14.9),color=I('black'),
+      fill=I('#0990D9'))+
+  ggtitle('Quality of redwines with high alcohol content')
+```
+
+The red wines with low alcohol content have quality 3 and 6 whereas with high alcohol content,the quality is 5.
+
+## Univariate Analysis
+
+####What is the structure of your dataset?
+There are 1599 red wines in the dataset with variables(fixed.acidity,volatile.acidity,citric.acid,residual.sugar,
+chlorides,free.sulfur.dioxide,total.sulfur.dioxide,density,pH,sulphates,alcohol,quality).The value of quality is from 3 to 8.
+Other observations:
+-Most red wines have quality equal to 5 or 6.
+-There are 132 datasets with 0 value for citric.acid.Maximumt value is 1.
+-The mean density value is 0.9967.
+-There are 139(highest) red wines with alcohol value=9.5.
+-The mean pH value is  3.311.
+
+####What are the main feature(s) of interest in your dataset?
+The main features in the data set are alcohol and quality. I'd like to determine which properties are best for predicting the quality of red wine. I suspect quality and some combination of the other variables can be used to determine the quality of red wine.
+
+####What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+Alcohol, sulphates,pH, density, chlorides, citric.acid,fixed.acidity and volatile.acidity likely contribute to the quality of red wine. I think alcohol probably contribute most to the price after researching information on redwine quality.
+
+####Did you create any new variables from existing variables in the dataset?
+No,I didn't create any new variables.
+
+####Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data?
+Most red wines in the dataset have zero value for citric acid.We eliminate that part from the plot for the exploration.Now the highest number value is around 0.04.Next,I log-transformed the chlorides distribution to obtain it more clearly.
+
+##Bivariate Plots Section
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=7, fig.height=6}
+library(GGally)
+theme_set(theme_minimal(20))
+set.seed(1836)
+redwine$c.acid<-redwine$citric.acid
+redwine$f.a<-redwine$fixed.acidity
+redwine$v.a<-redwine$volatile.acidity
+redwine_subset = redwine[, c('alcohol', 'pH', 'quality', 'c.acid',
+                             'f.a', 'v.a','density')]
+names(redwine_subset)
+ggpairs(redwine_subset[sample.int(nrow(redwine_subset), 1000), ],axis.text = element_blank())
+
+```
+
+From the subset of redwine dataset,the quality is moderately correlated to alcohol,volatile.acidity and less correlated to citric.acid .Density is correlated to alcohol,pH,citric.acid and fixed.acidity where fixed.acidity and citric.acid are highly correlated.pH is correlated to citric.acid and fixed.acidity. I want to look closer at scatter plots involving quality and some other variables like alcohol,density,pH.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(scales)
+library(ggplot2)
+ggplot(aes(x=alcohol,y=quality),data=redwine)+
+  geom_point(alpha=1/2,position = 'jitter')+
+  scale_x_continuous(limits = c(8, 16),
+                     breaks = c(8,10,12,14,16)) +
+  scale_y_continuous(limits = c(3, 8),
+                     breaks = c(3,4, 5,6,7,8)) +
+  ggtitle('Quality by Alcohol')
+```
+
+For the scatterplot showing quality by alcohol,red wines with same alcohol values take different qualities.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(factor(quality), 
+            alcohol), 
+        data = redwine) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+  ggtitle('Quality by Alcohol')
+```
+
+The box plot shows the relation between quality and alcohol.The alcohol median value is high for quality of 8 and less for 5.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+by(redwine$alcohol,redwine$quality,summary)
+```
+ 
+It shows different mean and median values for each quality values.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(scales)
+ggplot(aes(x=pH,y=quality),data=redwine)+
+  geom_point(alpha=1/2,position = 'jitter')+
+  scale_x_continuous(limits = c(2, 4),
+                     breaks = c(2,3,4)) +
+  scale_y_continuous(limits = c(3, 8),
+                     breaks = c(3, 4, 5, 6, 7,8)) +
+  ggtitle('Quality by pH')
+  
+```
+
+For the scatterplot showing quality by pH,there are more noise for the quality values 5 and 6.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(factor(quality), 
+            pH), 
+        data = redwine) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+ggtitle('Quality by pH')
+```
+
+The boxplot shows the relation between quality and pH.High median pH value is at quality 3 and low at 8.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+by(redwine$pH,redwine$quality,summary)
+```
+
+The max value of pH in the dataset is 4.01 which has a quality 6.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(scales)
+library(ggplot2)
+ggplot(aes(x=density,y=quality),data=redwine)+
+  geom_point(alpha=1/2,position = 'jitter')+
+  
+  scale_y_continuous(limits = c(3, 8),
+                     breaks = c(3, 4, 5, 6, 7,8)) +
+  ggtitle('Quality by density')
+```
+
+For the scatterplot showing quality by density,points are close around for quality values 5 and 6 and there are some outliers.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(factor(quality), 
+            density), 
+        data = redwine) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+ggtitle('Quality by density')
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+by(redwine$density,redwine$quality,summary)
+```
+
+The mean median value for all quality values are almost same.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ ggplot(aes(x=density,y=fixed.acidity),data=redwine)+
+  geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)
+  ggtitle('Density vs fixed.acidity')
+```
+
+The fixed.acidity vs density plot shows a positive linear relationship.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ ggplot(aes(x=pH,y=fixed.acidity),data=redwine)+
+  geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)
+  ggtitle('pH vs fixed.acidity')
+```
+
+The fixed.acidity vs pH plot shows a negatively linear relationship.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ ggplot(aes(x=pH,y=citric.acid),data=redwine)+
+  geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)
+  ggtitle('pH vs citric.acid')
+```
+
+The citric.acid vs pH plot also shows a negatively linear relationship.
+
+
+## Bivariate Analysis
+
+####Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+I have plotted quality against alcohol,pH and density.The alcohol versus quality plot shows that same alcohol values take different qualities.It shows a less relationship and is positive.The plot for quality versus pH is a noisy plot with most of the redwines with diffreent pH values contains the value 5 and 6 for quality.Next,the plot for quality versus density are less noisy and are having many outliers.
+
+####Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+The plot for fixed.acidity vs density plot shows a positive linear relationship.It has a strong correlation.
+The plot for fixed.acidity vs pH plot shows a negatively linear relationship.The fixed.acidity is strongly correlated to pH.The plot for citric.acid vs pH plot also shows a negatively linear relationship.The citric.acid is moderately correlated to pH.
+
+####What was the strongest relationship you found?
+The quality of a red wine is correlated with alcohol value.The other two variables are less correlted.Therefore alcohol could be used to predict the quality of a red wine.
+
+##Multivariate Plots Section
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=density,y=fixed.acidity,color=factor(quality)),
+       data =redwine)+
+  geom_point(alpha = 0.8, size = 1)+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))
+  ggtitle('Fixed.acidity by quality and density')
+```
+
+This scatterplot shows the relation between density and fixed.acidity for each values of quality.The plot is littile noisy.It shows a linear relationship.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=pH,y=fixed.acidity,color=factor(quality)),
+       data =redwine)+
+  geom_point(alpha = 0.8, size = 1)+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))
+  ggtitle('Fixed.acidity by quality and pH')
+```
+
+The scatterplot for pH versus fixed.acidity with different quality values shows a negatively linear relationship.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=pH,y=citric.acid,color=factor(quality)),
+       data =redwine)+
+  geom_point(alpha = 0.8, size = 1)+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))
+  ggtitle('Citric.acid by quality and pH')
+```
+
+Here the scatterplot for pH versus citric.acid for the quality values from 3 to 8.Some redwines with different pH values have the value for citric.acid equal to 0.
+
+The last plots suggest that we can build a linear model and use those variables in the linear model to predict the quality of red wines.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(memisc)
+m1 <- lm(I(log(quality)) ~ I(alcohol), data = redwine)
+m2 <- update(m1, ~ . + alcohol)
+m3 <- update(m2, ~ . + pH)
+m4 <- update(m3, ~ . + density)
+m5 <- update(m4, ~ . + fixed.acidity)
+m6 <- update(m5, ~ . + citric.acid)
+mtable(m1, m2, m3, m4, m5,m6, sdigits = 3)
+```
+
+The variables in this linear model can account for variance in the quality of red wines.
+
+##Multivariate Analysis
+
+####Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+There is a great relationship between the density and fixed.acidity values for all quality values of red wine.The high quality values are concentrated at a particular range of density values.For the scatterplot for pH versus fixed.acidity,high quality values are concentrated between 3.2 and 3.5 pH values. 
+
+####Were there any interesting or surprising interactions between features?
+The plot for pH and citric acid shows a less relationship with quality values.I thought pH and citric acid will highly account for the quality of red wines.
+
+####OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
+Yes, I created a linear model starting from the log of quality and alcohol.The variables in the linear model account for the quality of red wines.
+
+##Final Plots and Summary
+
+###Plot One
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+qplot(x=quality,data=redwine,color=I('black'),fill=I('#0990D9'),
+      xlab='Quality[units]',
+      ylab='No of red wines[count]')+
+  ggtitle('Quality of diamonds')
+```
+
+###Description One
+The distribution of quality is from values 3 to 8.Most of the red wines are having quality values 5 and 6.Now we explore the dataset to predict the quality of red wines.
+
+###Plot Two
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+qplot(x=factor(quality), 
+            y=alcohol, data = redwine,
+      xlab='Quality[units]',
+      ylab='Alcohol[%]') +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+  ggtitle('Quality by Alcohol')
+```
+
+###Description Two
+We found that the quality and alcohol are more correlated.So,here we explore quality based on the alcohol content.The box plot shows a clear relationship between the quality and alcohol.The high median value of alcohol is at quality 8 and low at quality 5.That means for the high alcohol content,the quality is high.
+
+###Plot Three
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+qplot(x=density,y=fixed.acidity,color=factor(quality),
+          xlab='Density[kg/m3]',
+          ylab='Fixed.acidity[mg/L]',
+       data =redwine)+
+  geom_point(alpha = 0.8, size = 1)+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+
+  ggtitle('Fixed.acidity by quality and density')
+```
+
+###Description Three
+Then plotted a scatterplot of fixed.acidity by density and quality.We found that these two vraiables(density and fixed.acidity) shows more result to redict the quality.It shows a linear relationship.The plot indicates that a linear model could be constructed to predict the  quality of red wines using density and fixed.acidity variables.
+
+##Reflection
+The redwine data set contains information on almost 1600 redwines across thirteen variables. I started by understanding the individual variables in the data set, and then I explored interesting questions and leads as I continued to make observations on plots. Eventually, I explored the quality of red wines across many variables and created a linear model to predict redwine quality.
+
+When I go through the dataset,the value of citric.acid are found to be 0 for 132 red wines.I cleared that part where the value of citric.acid is 0.When I check the correlation between different variables,I expect a bond between quality and pH,but it was wrong.Most of the variables were having less correlation to quality .There was a clear trend between the alcohol value of redwine and its quality.The high median value of alcohol is at quality 8 and low at quality 5.That means for the high alcohol content,the quality is high.Therefore alcohol could be used to predict the quality of a red wine.The plot for fixed.acidity vs density plot shows a positive linear relationship.It has a strong correlation.
+
+Then I observe that there is a great relationship between the density and fixed.acidity .So I plotted density by fixed.acidity for all quality values of red wine.It shows a linear relationship.Finally I had use more than 1 variables to predict the quality.Therefore I conclude to build a linear model and use those variables in the linear model to predict the quality of red wines.I created a linear model starting from the log of quality and alcohol.The variables in the linear model account for the quality of red wines.
+
+Therefore the quality of a red wine can be predicted by checking the alcohol percentage in it or by plotting the density vs fixed.acidity for all quality values.This is one way.We can also check for other combination of variables.
+
+We can also explore the dataset if some other properties like color is added.Colors can vary like light red,dark red,bright red,etc.If that propert is there,we could explore the dataset to predict the color of a red wine.
+
+
+
+
+
