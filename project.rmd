@@ -443,7 +443,7 @@ qplot(x=factor(quality),
             y=alcohol, data = redwine,
       xlab='Quality[units]',
       ylab='Alcohol[%]') +
-  geom_jitter( alpha = .3)  +
+  geom_jitter( alpha = .3) +
   geom_boxplot( alpha = .5,color = 'blue')+
   stat_summary(fun.y = "mean", 
                geom = "point", 
