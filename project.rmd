@@ -23,7 +23,7 @@ qplot(x=quality,data=redwine,color=I('black'),fill=I('#0990D9'))+
   ggtitle('Quality of red wines')
 ```
 
-The quality in our dataset ranges from 3(less quality) to 8(high quality) with the peaks in 5 and 6.There are very few redwines with quality 3 and 8.Why there are peaks at 5 and 6?What factors affect the quality of redwines?Lets check out the other attributes of redwine dataset.
+The quality in our dataset ranges from 3(less quality) to 8(high quality) with the peaks in 5 and 6. There are very few redwines with quality 3 and 8. Why there are peaks at 5 and 6? What factors affect the quality of redwines?Lets check out the other attributes of redwine dataset.
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
