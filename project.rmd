@@ -175,7 +175,7 @@ The red wines with low alcohol content have quality 3 and 6 whereas with high al
 
 ####What is the structure of your dataset?
 There are 1599 red wines in the dataset with variables(fixed.acidity,volatile.acidity,citric.acid,residual.sugar,
-chlorides,free.sulfur.dioxide,total.sulfur.dioxide,density,pH,sulphates,alcohol,quality).The value of quality is from 3 to 8.
+chlorides,free.sulfur.dioxide,total.sulfur.dioxide,density,pH,sulphates,alcohol,quality). The value of quality is from 3 to 8.
 Other observations:
 -Most red wines have quality equal to 5 or 6.
 -There are 132 datasets with 0 value for citric.acid.Maximumt value is 1.
